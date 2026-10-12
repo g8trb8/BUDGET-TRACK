@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Private Budget</title>
+  <style>
+    :root { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0f172a; color: #f8fafc; }
+    body { max-width: 420px; margin: 0 auto; padding: 20px; box-sizing: border-box; }
+    h2 { margin-bottom: 8px; }
+    .card { background: #1e293b; border-radius: 12px; padding: 16px; margin-bottom: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+    .stat { font-size: 1.8rem; font-weight: 700; color: #38bdf8; }
+    input, select, button { width: 100%; padding: 12px; margin-top: 8px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #f8fafc; font-size: 1rem; box-sizing: border-box; }
+    button { background: #0284c7; color: white; border: none; font-weight: 600; cursor: pointer; margin-top: 12px; }
+    button:active { background: #0369a1; }
+    ul { list-style: none; padding: 0; margin: 0; }
+    li { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #334155; font-size: 0.95rem; }
+    .secondary-btn { background: transparent; border: 1px solid #475569; color: #94a3b8; margin-top: 8px; font-size: 0.85rem; padding: 8px; }
+  </style>
+</head>
+<body>
+
+  <h2>Private Expense Tracker</h2>
+  <div class="card">
+    <div style="font-size: 0.85rem; color: #94a3b8;">Total Spent (Local Only)</div>
+    <div class="stat" id="totalDisplay">$0.00</div>
+  </div>
+
+  <div class="card">
+    <label for="desc">Description</label>
+    <input type="text" id="desc" placeholder="e.g., Groceries" />
+
+    <label for="amount" style="margin-top: 10px; display: block;">Amount ($)</label>
+    <input type="number" id="amount" step="0.01" placeholder="0.00" />
+
+    <label for="category" style="margin-top: 10px; display: block;">Category</label>
+    <select id="category">
+      <option value="Supplies">Supplies & Materials</option>
+      <option value="Food">Groceries & Dining</option>
+      <option value="Utilities">Utilities & Bills</option>
+      <option value="Personal">Personal & Discretionary</option>
+    </select>
+
+    <button onclick="addExpense()">Add Expense</button>
+  </div>
+
+  <div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+      <span style="font-weight: 600;">Recent Transactions</span>
+      <button class="secondary-btn" style="width: auto; margin: 0;" onclick="exportCSV()">Export CSV</button>
+    </div>
+    <ul id="txList"></ul>
+  </div>
+
+  <script>
+    let expenses = JSON.parse(localStorage.getItem('my_private_expenses') || '[]');
+
+    function render() {
+      const list = document.getElementById('txList');
+      list.innerHTML = '';
+      let total = 0;
+
+      expenses.slice(-10).reverse().forEach(item => {
+        const li = document.createElement('li');
+        li.innerHTML = `<span>${item.desc} <small style="color: #64748b;">(${item.cat})</small></span><b>$${item.amount.toFixed(2)}</b>`;
+        list.appendChild(li);
+      });
+
+      total = expenses.reduce((sum, item) => sum + item.amount, 0);
+      document.getElementById('totalDisplay').innerText = `$${total.toFixed(2)}`;
+    }
+
+    function addExpense() {
+      const desc = document.getElementById('desc').value.trim();
+      const amount = parseFloat(document.getElementById('amount').value);
+      const cat = document.getElementById('category').value;
+
+      if (!desc || isNaN(amount) || amount <= 0) return;
+
+      expenses.push({ id: Date.now(), desc, amount, cat, date: new Date().toISOString() });
+      localStorage.setItem('my_private_expenses', JSON.stringify(expenses));
+
+      document.getElementById('desc').value = '';
+      document.getElementById('amount').value = '';
+      render();
+    }
+
+    function exportCSV() {
+      if (!expenses.length) return alert('No data to export.');
+      let csv = "Date,Description,Category,Amount\n" + 
+        expenses.map(e => `"${e.date}","${e.desc}","${e.cat}",${e.amount}`).join("\n");
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `expenses-${new Date().toISOString().slice(0,10)}.csv`;
+      a.click();
+    }
+
+    render();
+  </script>
+</body>
+</html>
