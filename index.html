@@ -4,9 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#0f172a" />
-  <title>Private Budget</title>
+  <title>Expenditure Tracker</title>
 
-  <!-- PWA Manifest & Inline SVG Icon -->
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%230284c7'/%3E%3Ctext x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='260' font-weight='bold' fill='white'%3E$%3C/text%3E%3C/svg%3E" />
   <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%230284c7'/%3E%3Ctext x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='260' font-weight='bold' fill='white'%3E$%3C/text%3E%3C/svg%3E" />
@@ -18,54 +17,79 @@
       color: #f8fafc;
     }
     body {
-      max-width: 440px;
+      max-width: 480px;
       margin: 0 auto;
       padding: 16px;
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
     }
     h1 {
-      font-size: 1.4rem;
-      margin: 8px 0 16px 0;
+      font-size: 1.3rem;
+      margin: 4px 0 12px 0;
       font-weight: 700;
+      color: #f8fafc;
     }
     .card {
       background: #1e293b;
       border-radius: 12px;
       padding: 16px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
     }
-    .stat-label {
-      font-size: 0.85rem;
-      color: #94a3b8;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
+    /* Month Header Navigator */
+    .month-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .month-nav button {
+      background: #334155;
+      color: #f8fafc;
+      border: none;
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 1rem;
+      cursor: pointer;
+      width: auto;
+    }
+    .month-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #cbd5e1;
     }
     .stat {
       font-size: 2.2rem;
       font-weight: 700;
       color: #38bdf8;
-      margin-top: 4px;
+      margin: 4px 0;
+    }
+    .substat {
+      font-size: 0.8rem;
+      color: #94a3b8;
+    }
+    /* Inputs */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
     }
     label {
       display: block;
-      font-size: 0.85rem;
+      font-size: 0.78rem;
       color: #94a3b8;
-      margin-top: 10px;
-    }
-    label:first-of-type {
-      margin-top: 0;
+      margin-top: 8px;
+      font-weight: 500;
     }
     input, select, button {
       width: 100%;
-      padding: 12px;
-      margin-top: 6px;
+      padding: 10px 12px;
+      margin-top: 4px;
       border-radius: 8px;
       border: 1px solid #334155;
       background: #0f172a;
       color: #f8fafc;
-      font-size: 1rem;
+      font-size: 0.95rem;
       box-sizing: border-box;
       outline: none;
     }
@@ -78,29 +102,25 @@
       border: none;
       font-weight: 600;
       cursor: pointer;
-      margin-top: 16px;
+      margin-top: 14px;
+      padding: 12px;
     }
     button.primary-btn:active {
       background: #0369a1;
     }
-    .btn-row {
-      display: flex;
+    /* Filters & Controls */
+    .filter-bar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 8px;
-      margin-top: 12px;
+      margin-top: 8px;
     }
-    .secondary-btn {
-      background: transparent;
-      border: 1px solid #475569;
-      color: #94a3b8;
+    .filter-bar select {
       font-size: 0.85rem;
-      padding: 8px 12px;
-      width: auto;
-      cursor: pointer;
-      margin: 0;
+      padding: 8px;
+      background: #1e293b;
     }
-    .secondary-btn:active {
-      background: #334155;
-    }
+    /* Lists & Progress Bars */
     ul {
       list-style: none;
       padding: 0;
@@ -110,9 +130,9 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 12px 0;
+      padding: 10px 0;
       border-bottom: 1px solid #334155;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
     }
     li:last-child {
       border-bottom: none;
@@ -129,7 +149,7 @@
     .tx-right {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
     .tx-amount {
       font-weight: 600;
@@ -139,100 +159,209 @@
       background: none;
       border: none;
       color: #ef4444;
-      font-size: 1.1rem;
-      padding: 0 4px;
+      font-size: 1rem;
+      padding: 2px 6px;
       cursor: pointer;
       width: auto;
-      margin: 0;
+    }
+    /* Category Breakdown Bars */
+    .breakdown-row {
+      margin-bottom: 10px;
+    }
+    .breakdown-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      margin-bottom: 4px;
+    }
+    .progress-track {
+      background: #334155;
+      height: 6px;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      background: #38bdf8;
+      height: 100%;
+    }
+    .btn-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .secondary-btn {
+      background: transparent;
+      border: 1px solid #475569;
+      color: #94a3b8;
+      font-size: 0.8rem;
+      padding: 6px 10px;
+      cursor: pointer;
+      width: auto;
     }
   </style>
 </head>
 <body>
 
-  <h1>Private Budget</h1>
+  <h1>Monthly Expenditure</h1>
 
+  <!-- Month Summary Card -->
   <div class="card">
-    <div class="stat-label">Total Spent (On-Device)</div>
-    <div class="stat" id="totalDisplay">$0.00</div>
+    <div class="month-nav">
+      <button onclick="changeMonth(-1)">‹</button>
+      <span class="month-title" id="monthDisplay">October 2026</span>
+      <button onclick="changeMonth(1)">›</button>
+    </div>
+    <div class="stat" id="monthTotal">$0.00</div>
+    <div class="substat" id="txCount">0 transactions recorded</div>
   </div>
 
+  <!-- Add Expenditure Card -->
   <div class="card">
-    <label for="desc">Item / Description</label>
-    <input type="text" id="desc" placeholder="e.g., Grocery run" autocomplete="off" />
+    <div style="font-weight: 600; margin-bottom: 6px; font-size: 0.95rem;">Log Expenditure</div>
+    
+    <label for="desc">Merchant / Description</label>
+    <input type="text" id="desc" placeholder="e.g., Home Depot, Publix, Electric bill" autocomplete="off" />
 
-    <label for="amount">Amount ($)</label>
-    <input type="number" id="amount" step="0.01" inputmode="decimal" placeholder="0.00" />
+    <div class="form-grid">
+      <div>
+        <label for="amount">Amount ($)</label>
+        <input type="number" id="amount" step="0.01" inputmode="decimal" placeholder="0.00" />
+      </div>
+      <div>
+        <label for="date">Date</label>
+        <input type="date" id="date" />
+      </div>
+    </div>
 
     <label for="category">Category</label>
     <select id="category">
-      <option value="Supplies">Supplies & Materials</option>
-      <option value="Groceries">Groceries & Dining</option>
-      <option value="Utilities">Utilities & Home</option>
-      <option value="Personal">Personal & Discretionary</option>
+      <optgroup label="Housing & Home">
+        <option value="Mortgage / Rent">Mortgage / Rent</option>
+        <option value="Home Maintenance & Repairs">Home Maintenance & Repairs</option>
+        <option value="Home Improvement / Hardware">Home Improvement / Hardware</option>
+        <option value="Furniture & Appliances">Furniture & Appliances</option>
+        <option value="Lawn & Garden">Lawn & Garden</option>
+      </optgroup>
+      <optgroup label="Utilities & Services">
+        <option value="Electric & Gas">Electric & Gas</option>
+        <option value="Water & Trash">Water & Trash</option>
+        <option value="Internet & Cable">Internet & Cable</option>
+        <option value="Cell Phone">Cell Phone</option>
+      </optgroup>
+      <optgroup label="Food & Dining">
+        <option value="Groceries">Groceries</option>
+        <option value="Restaurants & Takeout">Restaurants & Takeout</option>
+        <option value="Coffee & Snacks">Coffee & Snacks</option>
+      </optgroup>
+      <optgroup label="Transportation">
+        <option value="Gas / Fuel">Gas / Fuel</option>
+        <option value="Auto Insurance">Auto Insurance</option>
+        <option value="Auto Maintenance / Parts">Auto Maintenance / Parts</option>
+        <option value="Tolls & Parking">Tolls & Parking</option>
+      </optgroup>
+      <optgroup label="Health & Personal">
+        <option value="Medical & Dental">Medical & Dental</option>
+        <option value="Prescriptions & Pharmacy">Prescriptions & Pharmacy</option>
+        <option value="Personal Care / Barber">Personal Care / Barber</option>
+        <option value="Clothing & Shoes">Clothing & Shoes</option>
+      </optgroup>
+      <optgroup label="Leisure & Hobbies">
+        <option value="Hobbies & Crafts">Hobbies & Crafts</option>
+        <option value="Streaming & Subscriptions">Streaming & Subscriptions</option>
+        <option value="Sports & Recreation">Sports & Recreation</option>
+        <option value="Travel & Lodging">Travel & Lodging</option>
+      </optgroup>
+      <optgroup label="Family & Pets">
+        <option value="Education & Tuition">Education & Tuition</option>
+        <option value="Kids Activities & Needs">Kids Activities & Needs</option>
+        <option value="Pets & Veterinary">Pets & Veterinary</option>
+        <option value="Gifts & Celebrations">Gifts & Celebrations</option>
+      </optgroup>
+      <optgroup label="Financial & Admin">
+        <option value="Life & Home Insurance">Life & Home Insurance</option>
+        <option value="Taxes & Government">Taxes & Government</option>
+        <option value="Shipping & Postage">Shipping & Postage</option>
+        <option value="Miscellaneous">Miscellaneous</option>
+      </optgroup>
     </select>
 
-    <button class="primary-btn" onclick="addExpense()">Add Transaction</button>
+    <button class="primary-btn" onclick="addExpense()">Record Spending</button>
   </div>
 
+  <!-- Monthly Breakdown -->
   <div class="card">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-      <span style="font-weight: 600;">History</span>
+    <div style="font-weight: 600; margin-bottom: 10px; font-size: 0.95rem;">Category Breakdown (This Month)</div>
+    <div id="breakdownList"></div>
+  </div>
+
+  <!-- Detailed Transactions & Filters -->
+  <div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <span style="font-weight: 600; font-size: 0.95rem;">Transactions</span>
       <div class="btn-row" style="margin: 0;">
         <button class="secondary-btn" onclick="exportCSV()">Export CSV</button>
-        <button class="secondary-btn" onclick="clearData()" style="color: #f87171; border-color: #7f1d1d;">Clear</button>
       </div>
     </div>
-    <ul id="txList"></ul>
+
+    <!-- Filter & Sort Controls -->
+    <div class="filter-bar">
+      <select id="categoryFilter" onchange="render()">
+        <option value="ALL">All Categories</option>
+      </select>
+      <select id="sortBy" onchange="render()">
+        <option value="date-desc">Newest First</option>
+        <option value="date-asc">Oldest First</option>
+        <option value="amt-desc">Highest Amount</option>
+        <option value="amt-asc">Lowest Amount</option>
+        <option value="alpha">Merchant (A-Z)</option>
+      </select>
+    </div>
+
+    <ul id="txList" style="margin-top: 10px;"></ul>
   </div>
 
   <script>
-    // Register Service Worker for offline PWA installation
+    // PWA Service Worker Registration
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW error:', err));
+        navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW failed', err));
       });
     }
 
     let expenses = JSON.parse(localStorage.getItem('my_private_expenses') || '[]');
+    let currentViewDate = new Date(); // Tracks selected month
 
-    function render() {
-      const list = document.getElementById('txList');
-      list.innerHTML = '';
-      let total = 0;
+    // Set today's date in input by default
+    document.getElementById('date').value = new Date().toISOString().slice(0, 10);
 
-      if (expenses.length === 0) {
-        list.innerHTML = '<li style="color: #64748b; font-size: 0.85rem; justify-content: center;">No transactions logged yet.</li>';
-      } else {
-        expenses.slice().reverse().forEach((item, index) => {
-          const actualIndex = expenses.length - 1 - index;
-          const li = document.createElement('li');
-          const dateStr = item.date ? item.date.slice(0, 10) : '';
+    // Populate category filter from select options
+    function initFilters() {
+      const catSelect = document.getElementById('category');
+      const filterSelect = document.getElementById('categoryFilter');
+      const options = Array.from(catSelect.querySelectorAll('option')).map(o => o.value);
+      options.forEach(opt => {
+        const el = document.createElement('option');
+        el.value = opt;
+        el.textContent = opt;
+        filterSelect.appendChild(el);
+      });
+    }
+    initFilters();
 
-          li.innerHTML = `
-            <div class="tx-meta">
-              <span>${item.desc}</span>
-              <span class="tx-sub">${item.cat} • ${dateStr}</span>
-            </div>
-            <div class="tx-right">
-              <span class="tx-amount">$${item.amount.toFixed(2)}</span>
-              <button class="del-btn" onclick="deleteExpense(${actualIndex})" title="Delete">✕</button>
-            </div>
-          `;
-          list.appendChild(li);
-        });
-      }
-
-      total = expenses.reduce((sum, item) => sum + item.amount, 0);
-      document.getElementById('totalDisplay').innerText = `$${total.toFixed(2)}`;
+    function changeMonth(delta) {
+      currentViewDate.setMonth(currentViewDate.getMonth() + delta);
+      render();
     }
 
     function addExpense() {
       const descInput = document.getElementById('desc');
       const amountInput = document.getElementById('amount');
+      const dateInput = document.getElementById('date');
       const catInput = document.getElementById('category');
 
       const desc = descInput.value.trim();
       const amount = parseFloat(amountInput.value);
+      const date = dateInput.value || new Date().toISOString().slice(0, 10);
       const cat = catInput.value;
 
       if (!desc || isNaN(amount) || amount <= 0) return;
@@ -242,7 +371,7 @@
         desc,
         amount,
         cat,
-        date: new Date().toISOString()
+        date
       });
 
       localStorage.setItem('my_private_expenses', JSON.stringify(expenses));
@@ -251,33 +380,122 @@
       render();
     }
 
-    function deleteExpense(index) {
-      expenses.splice(index, 1);
+    function deleteExpense(id) {
+      expenses = expenses.filter(e => e.id !== id);
       localStorage.setItem('my_private_expenses', JSON.stringify(expenses));
       render();
     }
 
-    function clearData() {
-      if (confirm('Clear all logged transactions from your device?')) {
-        expenses = [];
-        localStorage.removeItem('my_private_expenses');
-        render();
+    function render() {
+      const year = currentViewDate.getFullYear();
+      const month = currentViewDate.getMonth(); // 0-indexed
+
+      // Format header title
+      const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+      document.getElementById('monthDisplay').innerText = `${monthNames[month]} ${year}`;
+
+      // Filter expenses belonging to active month
+      const currentMonthExpenses = expenses.filter(e => {
+        const d = new Date(e.date + 'T00:00:00');
+        return d.getFullYear() === year && d.getMonth() === month;
+      });
+
+      // Calculate Total
+      const monthTotal = currentMonthExpenses.reduce((sum, e) => sum + e.amount, 0);
+      document.getElementById('monthTotal').innerText = `$${monthTotal.toFixed(2)}`;
+      document.getElementById('txCount').innerText = `${currentMonthExpenses.length} transactions recorded`;
+
+      // Render Category Breakdown
+      renderBreakdown(currentMonthExpenses, monthTotal);
+
+      // Render Transaction List with Sorting and Filtering
+      renderTransactions(currentMonthExpenses);
+    }
+
+    function renderBreakdown(monthExpenses, monthTotal) {
+      const breakdownEl = document.getElementById('breakdownList');
+      breakdownEl.innerHTML = '';
+
+      if (monthExpenses.length === 0) {
+        breakdownEl.innerHTML = '<div style="color: #64748b; font-size: 0.85rem;">No spending recorded this month.</div>';
+        return;
       }
+
+      // Group totals by category
+      const catTotals = {};
+      monthExpenses.forEach(e => {
+        catTotals[e.cat] = (catTotals[e.cat] || 0) + e.amount;
+      });
+
+      // Sort categories descending by amount
+      const sortedCats = Object.entries(catTotals).sort((a, b) => b[1] - a[1]);
+
+      sortedCats.forEach(([cat, amt]) => {
+        const pct = monthTotal > 0 ? ((amt / monthTotal) * 100).toFixed(1) : 0;
+        const row = document.createElement('div');
+        row.className = 'breakdown-row';
+        row.innerHTML = `
+          <div class="breakdown-labels">
+            <span>${cat}</span>
+            <span><b>$${amt.toFixed(2)}</b> (${pct}%)</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" style="width: ${pct}%;"></div>
+          </div>
+        `;
+        breakdownEl.appendChild(row);
+      });
+    }
+
+    function renderTransactions(monthExpenses) {
+      const list = document.getElementById('txList');
+      const selectedCat = document.getElementById('categoryFilter').value;
+      const sortBy = document.getElementById('sortBy').value;
+
+      list.innerHTML = '';
+
+      let filtered = monthExpenses.slice();
+      if (selectedCat !== 'ALL') {
+        filtered = filtered.filter(e => e.cat === selectedCat);
+      }
+
+      // Sorting Logic
+      filtered.sort((a, b) => {
+        if (sortBy === 'date-desc') return new Date(b.date) - new Date(a.date);
+        if (sortBy === 'date-asc') return new Date(a.date) - new Date(b.date);
+        if (sortBy === 'amt-desc') return b.amount - a.amount;
+        if (sortBy === 'amt-asc') return a.amount - b.amount;
+        if (sortBy === 'alpha') return a.desc.localeCompare(b.desc);
+        return 0;
+      });
+
+      if (filtered.length === 0) {
+        list.innerHTML = '<li style="color: #64748b; font-size: 0.85rem; justify-content: center;">No transactions match criteria.</li>';
+        return;
+      }
+
+      filtered.forEach(item => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <div class="tx-meta">
+            <span>${item.desc}</span>
+            <span class="tx-sub">${item.cat} • ${item.date}</span>
+          </div>
+          <div class="tx-right">
+            <span class="tx-amount">$${item.amount.toFixed(2)}</span>
+            <button class="del-btn" onclick="deleteExpense(${item.id})" title="Delete">✕</button>
+          </div>
+        `;
+        list.appendChild(li);
+      });
     }
 
     function exportCSV() {
       if (!expenses.length) return alert('No data to export.');
       let csv = "Date,Description,Category,Amount\n" +
-        expenses.map(e => `"${e.date.slice(0,10)}","${e.desc}","${e.cat}",${e.amount.toFixed(2)}`).join("\n");
+        expenses.map(e => `"${e.date}","${e.desc}","${e.cat}",${e.amount.toFixed(2)}`).join("\n");
       const blob = new Blob([csv], { type: 'text/csv' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `expenses-${new Date().toISOString().slice(0,10)}.csv`;
-      a.click();
-    }
-
-    render();
-  </script>
-</body>
-</html>
+      a
