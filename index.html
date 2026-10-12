@@ -2,57 +2,197 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0f172a" />
   <title>Private Budget</title>
+
+  <!-- PWA Manifest & Inline SVG Icon -->
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%230284c7'/%3E%3Ctext x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='260' font-weight='bold' fill='white'%3E$%3C/text%3E%3C/svg%3E" />
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%230284c7'/%3E%3Ctext x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='260' font-weight='bold' fill='white'%3E$%3C/text%3E%3C/svg%3E" />
+
   <style>
-    :root { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0f172a; color: #f8fafc; }
-    body { max-width: 420px; margin: 0 auto; padding: 20px; box-sizing: border-box; }
-    h2 { margin-bottom: 8px; }
-    .card { background: #1e293b; border-radius: 12px; padding: 16px; margin-bottom: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-    .stat { font-size: 1.8rem; font-weight: 700; color: #38bdf8; }
-    input, select, button { width: 100%; padding: 12px; margin-top: 8px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #f8fafc; font-size: 1rem; box-sizing: border-box; }
-    button { background: #0284c7; color: white; border: none; font-weight: 600; cursor: pointer; margin-top: 12px; }
-    button:active { background: #0369a1; }
-    ul { list-style: none; padding: 0; margin: 0; }
-    li { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #334155; font-size: 0.95rem; }
-    .secondary-btn { background: transparent; border: 1px solid #475569; color: #94a3b8; margin-top: 8px; font-size: 0.85rem; padding: 8px; }
+    :root {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #0f172a;
+      color: #f8fafc;
+    }
+    body {
+      max-width: 440px;
+      margin: 0 auto;
+      padding: 16px;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+    h1 {
+      font-size: 1.4rem;
+      margin: 8px 0 16px 0;
+      font-weight: 700;
+    }
+    .card {
+      background: #1e293b;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+    }
+    .stat-label {
+      font-size: 0.85rem;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .stat {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #38bdf8;
+      margin-top: 4px;
+    }
+    label {
+      display: block;
+      font-size: 0.85rem;
+      color: #94a3b8;
+      margin-top: 10px;
+    }
+    label:first-of-type {
+      margin-top: 0;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 6px;
+      border-radius: 8px;
+      border: 1px solid #334155;
+      background: #0f172a;
+      color: #f8fafc;
+      font-size: 1rem;
+      box-sizing: border-box;
+      outline: none;
+    }
+    input:focus, select:focus {
+      border-color: #38bdf8;
+    }
+    button.primary-btn {
+      background: #0284c7;
+      color: #ffffff;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 16px;
+    }
+    button.primary-btn:active {
+      background: #0369a1;
+    }
+    .btn-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .secondary-btn {
+      background: transparent;
+      border: 1px solid #475569;
+      color: #94a3b8;
+      font-size: 0.85rem;
+      padding: 8px 12px;
+      width: auto;
+      cursor: pointer;
+      margin: 0;
+    }
+    .secondary-btn:active {
+      background: #334155;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #334155;
+      font-size: 0.95rem;
+    }
+    li:last-child {
+      border-bottom: none;
+    }
+    .tx-meta {
+      display: flex;
+      flex-direction: column;
+    }
+    .tx-sub {
+      font-size: 0.75rem;
+      color: #64748b;
+      margin-top: 2px;
+    }
+    .tx-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .tx-amount {
+      font-weight: 600;
+      color: #f8fafc;
+    }
+    .del-btn {
+      background: none;
+      border: none;
+      color: #ef4444;
+      font-size: 1.1rem;
+      padding: 0 4px;
+      cursor: pointer;
+      width: auto;
+      margin: 0;
+    }
   </style>
 </head>
 <body>
 
-  <h2>Private Expense Tracker</h2>
+  <h1>Private Budget</h1>
+
   <div class="card">
-    <div style="font-size: 0.85rem; color: #94a3b8;">Total Spent (Local Only)</div>
+    <div class="stat-label">Total Spent (On-Device)</div>
     <div class="stat" id="totalDisplay">$0.00</div>
   </div>
 
   <div class="card">
-    <label for="desc">Description</label>
-    <input type="text" id="desc" placeholder="e.g., Groceries" />
+    <label for="desc">Item / Description</label>
+    <input type="text" id="desc" placeholder="e.g., Grocery run" autocomplete="off" />
 
-    <label for="amount" style="margin-top: 10px; display: block;">Amount ($)</label>
-    <input type="number" id="amount" step="0.01" placeholder="0.00" />
+    <label for="amount">Amount ($)</label>
+    <input type="number" id="amount" step="0.01" inputmode="decimal" placeholder="0.00" />
 
-    <label for="category" style="margin-top: 10px; display: block;">Category</label>
+    <label for="category">Category</label>
     <select id="category">
       <option value="Supplies">Supplies & Materials</option>
-      <option value="Food">Groceries & Dining</option>
-      <option value="Utilities">Utilities & Bills</option>
+      <option value="Groceries">Groceries & Dining</option>
+      <option value="Utilities">Utilities & Home</option>
       <option value="Personal">Personal & Discretionary</option>
     </select>
 
-    <button onclick="addExpense()">Add Expense</button>
+    <button class="primary-btn" onclick="addExpense()">Add Transaction</button>
   </div>
 
   <div class="card">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-      <span style="font-weight: 600;">Recent Transactions</span>
-      <button class="secondary-btn" style="width: auto; margin: 0;" onclick="exportCSV()">Export CSV</button>
+      <span style="font-weight: 600;">History</span>
+      <div class="btn-row" style="margin: 0;">
+        <button class="secondary-btn" onclick="exportCSV()">Export CSV</button>
+        <button class="secondary-btn" onclick="clearData()" style="color: #f87171; border-color: #7f1d1d;">Clear</button>
+      </div>
     </div>
     <ul id="txList"></ul>
   </div>
 
   <script>
+    // Register Service Worker for offline PWA installation
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW error:', err));
+      });
+    }
+
     let expenses = JSON.parse(localStorage.getItem('my_private_expenses') || '[]');
 
     function render() {
@@ -60,35 +200,75 @@
       list.innerHTML = '';
       let total = 0;
 
-      expenses.slice(-10).reverse().forEach(item => {
-        const li = document.createElement('li');
-        li.innerHTML = `<span>${item.desc} <small style="color: #64748b;">(${item.cat})</small></span><b>$${item.amount.toFixed(2)}</b>`;
-        list.appendChild(li);
-      });
+      if (expenses.length === 0) {
+        list.innerHTML = '<li style="color: #64748b; font-size: 0.85rem; justify-content: center;">No transactions logged yet.</li>';
+      } else {
+        expenses.slice().reverse().forEach((item, index) => {
+          const actualIndex = expenses.length - 1 - index;
+          const li = document.createElement('li');
+          const dateStr = item.date ? item.date.slice(0, 10) : '';
+
+          li.innerHTML = `
+            <div class="tx-meta">
+              <span>${item.desc}</span>
+              <span class="tx-sub">${item.cat} • ${dateStr}</span>
+            </div>
+            <div class="tx-right">
+              <span class="tx-amount">$${item.amount.toFixed(2)}</span>
+              <button class="del-btn" onclick="deleteExpense(${actualIndex})" title="Delete">✕</button>
+            </div>
+          `;
+          list.appendChild(li);
+        });
+      }
 
       total = expenses.reduce((sum, item) => sum + item.amount, 0);
       document.getElementById('totalDisplay').innerText = `$${total.toFixed(2)}`;
     }
 
     function addExpense() {
-      const desc = document.getElementById('desc').value.trim();
-      const amount = parseFloat(document.getElementById('amount').value);
-      const cat = document.getElementById('category').value;
+      const descInput = document.getElementById('desc');
+      const amountInput = document.getElementById('amount');
+      const catInput = document.getElementById('category');
+
+      const desc = descInput.value.trim();
+      const amount = parseFloat(amountInput.value);
+      const cat = catInput.value;
 
       if (!desc || isNaN(amount) || amount <= 0) return;
 
-      expenses.push({ id: Date.now(), desc, amount, cat, date: new Date().toISOString() });
-      localStorage.setItem('my_private_expenses', JSON.stringify(expenses));
+      expenses.push({
+        id: Date.now(),
+        desc,
+        amount,
+        cat,
+        date: new Date().toISOString()
+      });
 
-      document.getElementById('desc').value = '';
-      document.getElementById('amount').value = '';
+      localStorage.setItem('my_private_expenses', JSON.stringify(expenses));
+      descInput.value = '';
+      amountInput.value = '';
       render();
+    }
+
+    function deleteExpense(index) {
+      expenses.splice(index, 1);
+      localStorage.setItem('my_private_expenses', JSON.stringify(expenses));
+      render();
+    }
+
+    function clearData() {
+      if (confirm('Clear all logged transactions from your device?')) {
+        expenses = [];
+        localStorage.removeItem('my_private_expenses');
+        render();
+      }
     }
 
     function exportCSV() {
       if (!expenses.length) return alert('No data to export.');
-      let csv = "Date,Description,Category,Amount\n" + 
-        expenses.map(e => `"${e.date}","${e.desc}","${e.cat}",${e.amount}`).join("\n");
+      let csv = "Date,Description,Category,Amount\n" +
+        expenses.map(e => `"${e.date.slice(0,10)}","${e.desc}","${e.cat}",${e.amount.toFixed(2)}`).join("\n");
       const blob = new Blob([csv], { type: 'text/csv' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
